@@ -8,7 +8,7 @@
     <artifactId>chestshop</artifactId>
     <version>3.9.2</version>
     <description>Chest-and-sign shop plugin for Bukkit</description>
-    <name>ChestShop</name>
+    <name>ChestShop-CUSTOM</name>
 
     <scm>
         <connection>scm:git:git://github.com/ChestShop-authors/ChestShop-3</connection>
@@ -24,10 +24,6 @@
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/artifactory/repo/</url>
-        </repository>
-        <repository>
-            <id>bstats-repo</id>
-            <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
@@ -77,32 +73,8 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R8-SNAPSHOT</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>craftbukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit-lite</artifactId>
-            <version>1.2</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -307,26 +279,11 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.bukkit</include>
-                                    <include>org.bstats:*</include>
-                                    <include>net.gravitydevelopment.updater</include>
                                     <include>com.j256.ormlite</include>
                                     <include>org.apache.logging.log4j</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
-                                    <shadedPattern>com.Acrobot.ChestShop.Metrics.MCStats</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.bstats</pattern>
-                                    <shadedPattern>com.Acrobot.ChestShop.Metrics.BStats</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.gravitydevelopment.updater</pattern>
-                                    <shadedPattern>com.Acrobot.ChestShop.Updater</shadedPattern>
-                                </relocation>
                                 <relocation>
                                     <pattern>com.j256.ormlite</pattern>
                                     <shadedPattern>com.Acrobot.ChestShop.ORMlite</shadedPattern>
@@ -350,6 +307,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <build.number>${buildNumber}</build.number>
         <bukkit.plugin.version>${project.version} ${buildDescription}</bukkit.plugin.version>
+	    <skipTests>true</skipTests>
     </properties>
 
     <profiles>

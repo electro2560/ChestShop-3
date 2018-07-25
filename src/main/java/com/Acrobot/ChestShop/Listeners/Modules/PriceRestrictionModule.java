@@ -52,7 +52,7 @@ public class PriceRestrictionModule implements Listener {
             }
         } else if (!configuration.getBoolean("uses_materials")) {
             try {
-                Material.getMaterial(1);
+                Material.matchMaterial("1", true);
                 ChestShop.getBukkitLogger().log(Level.INFO, "Converting numeric IDs in priceLimits.yml to Material names...");
                 convertToMaterial("max.buy_price");
                 convertToMaterial("max.sell_price");

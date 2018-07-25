@@ -71,7 +71,7 @@ public class MaterialUtil {
 
         // Special check for banners as they might include the deprecated base color
         if (one.getType() == two.getType()
-                && one.getType() == Material.BANNER
+                && (one.getType().toString().contains("banner"))
                 && one.getDurability() == two.getDurability()) {
             Map<String, Object> m1 = new HashMap<>(one.getItemMeta().serialize());
             Map<String, Object> m2 = new HashMap<>(two.getItemMeta().serialize());
@@ -167,9 +167,11 @@ public class MaterialUtil {
     public static String getName(ItemStack itemStack, int maxLength) {
         String alias = Odd.getAlias(itemStack);
         String itemName = alias != null ? alias : itemStack.getType().toString();
-        if (itemStack.getType() != Material.HUGE_MUSHROOM_2 && itemName.endsWith("_2")) {
+        
+        //XXX: temp removed
+        /*if (itemStack.getType() != Material.HUGE_MUSHROOM_2 && itemName.endsWith("_2")) {
             itemName = itemName.substring(0, itemName.length() - 2);
-        }
+        }*/
 
         String data = DataValue.name(itemStack);
         String durability = "";

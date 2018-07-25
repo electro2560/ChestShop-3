@@ -33,7 +33,7 @@ public class SignSticker implements Listener {
     }
 
     private static void stickSign(Block signBlock, String[] lines) {
-        if (signBlock.getType() != Material.SIGN_POST) {
+        if (signBlock.getType() != Material.LEGACY_SIGN_POST) {
             return;
         }
 
@@ -54,7 +54,8 @@ public class SignSticker implements Listener {
         signMaterial.setFacingDirection(chestFace.getOppositeFace());
 
         signBlock.setType(Material.WALL_SIGN);
-        signBlock.setData(signMaterial.getData());
+        //XXX: to fix
+        // signBlock.setData(signMaterial.getData());
 
         Sign sign = (Sign) signBlock.getState();
 

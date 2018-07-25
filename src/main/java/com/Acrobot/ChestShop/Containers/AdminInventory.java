@@ -17,7 +17,14 @@ import org.bukkit.inventory.ItemStack;
  * @author Acrobot
  */
 public class AdminInventory implements Inventory {
-    @Override
+    
+	/***
+	 * TODO
+	 * Admin shops are not ready yet
+	 */
+	
+	
+	@Override
     public int getSize() {
         return Integer.MAX_VALUE;
     }
@@ -77,7 +84,6 @@ public class AdminInventory implements Inventory {
 
     }
 
-    @Override
     public boolean contains(int i) {
         return true;
     }
@@ -92,7 +98,6 @@ public class AdminInventory implements Inventory {
         return true;
     }
 
-    @Override
     public boolean contains(int i, int i1) {
         return true;
     }
@@ -112,10 +117,10 @@ public class AdminInventory implements Inventory {
         return true;
     }
 
-    @Override
     public HashMap<Integer, ? extends ItemStack> all(int i) {
         HashMap<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
-        items.put(1, new ItemStack(i, Integer.MAX_VALUE));
+      //TODO:
+        // items.put(1, new ItemStack(Material.matchMaterial(i, true), Integer.MAX_VALUE));
 
         return items;
     }
@@ -147,7 +152,6 @@ public class AdminInventory implements Inventory {
         return items;
     }
 
-    @Override
     public int first(int i) {
         return 0;
     }
@@ -167,7 +171,6 @@ public class AdminInventory implements Inventory {
         return 0;
     }
 
-    @Override
     public void remove(int i) {
     }
 
