@@ -6,7 +6,7 @@
 
     <groupId>com.acrobot.chestshop</groupId>
     <artifactId>chestshop</artifactId>
-    <version>3.9.2</version>
+    <version>4.0.5</version>
     <description>Chest-and-sign shop plugin for Bukkit</description>
     <name>ChestShop-CUSTOM</name>
 
@@ -29,10 +29,7 @@
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
         </repository>
-        <repository>
-            <id>authme-repo</id>
-            <url>http://ci.xephi.fr/plugin/repository/everything/</url>
-        </repository>
+     
         <repository>
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
@@ -70,12 +67,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+       <dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.14</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/spigot-1.14.jar</systemPath>
+		</dependency>
 
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -121,6 +119,14 @@
                 <exclusion>
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
+                </exclusion>
+                 <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>craftbukkit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -245,6 +251,16 @@
             <artifactId>api</artifactId>
             <version>1.2.24</version>
             <scope>provided</scope>
+            <exclusions>
+             <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>craftbukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -252,6 +268,16 @@
             <artifactId>Reserve</artifactId>
             <version>0.1.0.10</version>
             <scope>provided</scope>
+            <exclusions>
+             <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>craftbukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

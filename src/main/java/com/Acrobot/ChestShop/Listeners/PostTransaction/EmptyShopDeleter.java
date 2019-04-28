@@ -42,12 +42,15 @@ public class EmptyShopDeleter implements Listener {
         ShopDestroyedEvent destroyedEvent = new ShopDestroyedEvent(null, event.getSign(), connectedChest);
         ChestShop.callEvent(destroyedEvent);
 
+        final Material blockType = sign.getType();
+        
         sign.getBlock().setType(Material.AIR);
 
         if (Properties.REMOVE_EMPTY_CHESTS && !ChestShopSign.isAdminShop(ownerInventory) && InventoryUtil.isEmpty(ownerInventory)) {
             connectedChest.getBlock().setType(Material.AIR);
         } else {
-            ownerInventory.addItem(new ItemStack(Material.SIGN, 1));
+            //ownerInventory.addItem(new ItemStack(Material.SIGN, 1));
+            ownerInventory.addItem(new ItemStack(blockType, 1));
         }
     }
 

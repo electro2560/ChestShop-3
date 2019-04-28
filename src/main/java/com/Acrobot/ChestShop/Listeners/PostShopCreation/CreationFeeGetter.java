@@ -26,7 +26,11 @@ public class CreationFeeGetter implements Listener {
 
     @EventHandler
     public static void onShopCreation(ShopCreatedEvent event) {
-        double shopCreationPrice = Properties.SHOP_CREATION_PRICE;
+       //XXX: disabled
+    	
+    	return;
+    	
+    	/* double shopCreationPrice = Properties.SHOP_CREATION_PRICE;
 
         if (shopCreationPrice == 0) {
             return;
@@ -53,6 +57,6 @@ public class CreationFeeGetter implements Listener {
             ChestShop.callEvent(currencyAddEvent);
         }
 
-        player.sendMessage(Messages.prefix(Messages.SHOP_FEE_PAID.replace("%amount", Economy.formatBalance(shopCreationPrice))));
+        player.sendMessage(Messages.prefix(Messages.SHOP_FEE_PAID.replace("%amount", Economy.formatBalance(shopCreationPrice))));*/
     }
 }

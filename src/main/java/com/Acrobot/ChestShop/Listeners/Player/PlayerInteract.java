@@ -1,23 +1,20 @@
 package com.Acrobot.ChestShop.Listeners.Player;
 
-import com.Acrobot.Breeze.Utils.*;
-import com.Acrobot.ChestShop.Configuration.Messages;
-import com.Acrobot.ChestShop.Configuration.Properties;
-import com.Acrobot.ChestShop.Containers.AdminInventory;
-import com.Acrobot.ChestShop.Database.Account;
-import com.Acrobot.ChestShop.Events.Economy.AccountCheckEvent;
-import com.Acrobot.ChestShop.Events.PreTransactionEvent;
-import com.Acrobot.ChestShop.Events.TransactionEvent;
-import com.Acrobot.ChestShop.Permission;
-import com.Acrobot.ChestShop.Plugins.ChestShop;
-import com.Acrobot.ChestShop.Security;
-import com.Acrobot.ChestShop.Signs.ChestShopSign;
-import com.Acrobot.ChestShop.UUIDs.NameManager;
-import com.Acrobot.ChestShop.Utils.uBlock;
+import static com.Acrobot.Breeze.Utils.BlockUtil.isChest;
+import static com.Acrobot.Breeze.Utils.BlockUtil.isSign;
+import static com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType.BUY;
+import static com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType.SELL;
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.AUTOFILL_CODE;
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.ITEM_LINE;
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.NAME_LINE;
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.PRICE_LINE;
+import static com.Acrobot.ChestShop.Signs.ChestShopSign.QUANTITY_LINE;
+import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
+import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
@@ -31,14 +28,25 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import static com.Acrobot.Breeze.Utils.BlockUtil.isChest;
-import static com.Acrobot.Breeze.Utils.BlockUtil.isSign;
-import static com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
-import static com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType.BUY;
-import static com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType.SELL;
-import static com.Acrobot.ChestShop.Signs.ChestShopSign.*;
-import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
-import static org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK;
+import com.Acrobot.Breeze.Utils.BlockUtil;
+import com.Acrobot.Breeze.Utils.InventoryUtil;
+import com.Acrobot.Breeze.Utils.MaterialUtil;
+import com.Acrobot.Breeze.Utils.NumberUtil;
+import com.Acrobot.Breeze.Utils.PriceUtil;
+import com.Acrobot.ChestShop.Permission;
+import com.Acrobot.ChestShop.Security;
+import com.Acrobot.ChestShop.Configuration.Messages;
+import com.Acrobot.ChestShop.Configuration.Properties;
+import com.Acrobot.ChestShop.Containers.AdminInventory;
+import com.Acrobot.ChestShop.Database.Account;
+import com.Acrobot.ChestShop.Events.PreTransactionEvent;
+import com.Acrobot.ChestShop.Events.TransactionEvent;
+import com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
+import com.Acrobot.ChestShop.Events.Economy.AccountCheckEvent;
+import com.Acrobot.ChestShop.Plugins.ChestShop;
+import com.Acrobot.ChestShop.Signs.ChestShopSign;
+import com.Acrobot.ChestShop.UUIDs.NameManager;
+import com.Acrobot.ChestShop.Utils.uBlock;
 
 /**
  * @author Acrobot
@@ -67,7 +75,7 @@ public class PlayerInteract implements Listener {
             return;
         }
 
-        if (!isSign(block) || player.getItemInHand().getType() == Material.SIGN) // Blocking accidental sign edition
+        if (!isSign(block) || player.getItemInHand().getType().toString().contains("SIGN")/* == Material.SIGN*/) // Blocking accidental sign edition
             return;
 
         Sign sign = (Sign) block.getState();

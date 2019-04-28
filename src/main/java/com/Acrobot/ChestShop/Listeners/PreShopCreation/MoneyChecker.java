@@ -23,13 +23,16 @@ public class MoneyChecker implements Listener {
 
     @EventHandler
     public static void onPreShopCreation(PreShopCreationEvent event) {
-        double shopCreationPrice = Properties.SHOP_CREATION_PRICE;
+        /*double shopCreationPrice = Properties.SHOP_CREATION_PRICE;
 
         if (shopCreationPrice == 0) {
             return;
-        }
+        }*/
+        //XXX: fix
+        
+        return;
 
-        if (ChestShopSign.isAdminShop(event.getSignLine(NAME_LINE))) {
+        /*if (ChestShopSign.isAdminShop(event.getSignLine(NAME_LINE))) {
             return;
         }
 
@@ -44,6 +47,6 @@ public class MoneyChecker implements Listener {
 
         if (!currencyCheckEvent.hasEnough()) {
             event.setOutcome(NOT_ENOUGH_MONEY);
-        }
+        }*/
     }
 }

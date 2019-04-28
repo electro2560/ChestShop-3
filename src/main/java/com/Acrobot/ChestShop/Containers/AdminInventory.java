@@ -38,7 +38,6 @@ public class AdminInventory implements Inventory {
     public void setMaxStackSize(int i) {
     }
 
-    @Override
     public String getName() {
         return "Admin inventory";
     }
@@ -195,7 +194,6 @@ public class AdminInventory implements Inventory {
         return new ArrayList<HumanEntity>();
     }
 
-    @Override
     public String getTitle() {
         return "Admin inventory";
     }

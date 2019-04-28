@@ -7,6 +7,7 @@ import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
 import com.Acrobot.ChestShop.Events.ShopCreatedEvent;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -23,14 +24,23 @@ public class SignCreate implements Listener {
         Block signBlock = event.getBlock();
         String[] line = StringUtil.stripColourCodes(event.getLines());
 
+        	//Bukkit.broadcastMessage("test");
+        
         if (!BlockUtil.isSign(signBlock)) {
+        	//XXX: debug
+        	//Bukkit.broadcastMessage("Not sign? : " + signBlock.getType().toString());
             return;
         }
 
+        //Bukkit.broadcastMessage("test2");
+        
         if (!ChestShopSign.isValidPreparedSign(line)) {
+        	//Bukkit.broadcastMessage("end");
             return;
         }
 
+       // Bukkit.broadcastMessage("test3");
+        
         PreShopCreationEvent preEvent = new PreShopCreationEvent(event.getPlayer(), (Sign) signBlock.getState(), line);
         ChestShop.callEvent(preEvent);
 
@@ -38,11 +48,15 @@ public class SignCreate implements Listener {
             event.setLine(i, preEvent.getSignLine(i));
         }
 
+       // Bukkit.broadcastMessage("test4");
+        
         if (preEvent.isCancelled()) {
+        	//Bukkit.broadcastMessage("end22");
             return;
         }
 
         ShopCreatedEvent postEvent = new ShopCreatedEvent(preEvent.getPlayer(), preEvent.getSign(), uBlock.findConnectedChest(preEvent.getSign()), preEvent.getSignLines());
         ChestShop.callEvent(postEvent);
+       // Bukkit.broadcastMessage("test5");
     }
 }

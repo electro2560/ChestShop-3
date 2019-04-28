@@ -50,10 +50,10 @@ public class SignSticker implements Listener {
             return;
         }
 
-        org.bukkit.material.Sign signMaterial = new org.bukkit.material.Sign(Material.WALL_SIGN);
+        org.bukkit.material.Sign signMaterial = new org.bukkit.material.Sign(Material.OAK_WALL_SIGN);
         signMaterial.setFacingDirection(chestFace.getOppositeFace());
 
-        signBlock.setType(Material.WALL_SIGN);
+        signBlock.setType(Material.OAK_WALL_SIGN);
         //XXX: to fix
         // signBlock.setData(signMaterial.getData());
 

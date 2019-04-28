@@ -12,7 +12,9 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
  */
 public class ItemMoveListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	//Causes major lag. Not needed...
+	
+   /* @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public static void onItemMove(InventoryMoveItemEvent event) {
         if (event.getSource() == null || !BlockUtil.isChest(event.getSource().getHolder())) {
             return;
@@ -23,5 +25,5 @@ public class ItemMoveListener implements Listener {
         }
 
         event.setCancelled(true);
-    }
+    }*/
 }

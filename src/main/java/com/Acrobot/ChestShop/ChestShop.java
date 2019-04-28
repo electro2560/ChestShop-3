@@ -1,10 +1,42 @@
 package com.Acrobot.ChestShop;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
+import com.Acrobot.Breeze.Configuration.Configuration;
+import com.Acrobot.ChestShop.Commands.Give;
+import com.Acrobot.ChestShop.Commands.ItemInfo;
+import com.Acrobot.ChestShop.Commands.Toggle;
+import com.Acrobot.ChestShop.Commands.Version;
+import com.Acrobot.ChestShop.Configuration.Messages;
+import com.Acrobot.ChestShop.Configuration.Properties;
+import com.Acrobot.ChestShop.Database.Migrations;
+import com.Acrobot.ChestShop.Listeners.Block.BlockPlace;
+import com.Acrobot.ChestShop.Listeners.Block.Break.ChestBreak;
+import com.Acrobot.ChestShop.Listeners.Block.Break.SignBreak;
+import com.Acrobot.ChestShop.Listeners.Block.SignCreate;
+import com.Acrobot.ChestShop.Listeners.Economy.ServerAccountCorrector;
+import com.Acrobot.ChestShop.Listeners.Economy.TaxModule;
+import com.Acrobot.ChestShop.Listeners.AuthMeChestShopListener;
+import com.Acrobot.ChestShop.Listeners.GarbageTextListener;
+import com.Acrobot.ChestShop.Listeners.Item.ItemMoveListener;
+import com.Acrobot.ChestShop.Listeners.ItemInfoListener;
+import com.Acrobot.ChestShop.Listeners.SignParseListener;
+import com.Acrobot.ChestShop.Listeners.Modules.DiscountModule;
+import com.Acrobot.ChestShop.Listeners.Modules.PriceRestrictionModule;
+import com.Acrobot.ChestShop.Listeners.Player.*;
+import com.Acrobot.ChestShop.Listeners.PreShopCreation.CreationFeeGetter;
+import com.Acrobot.ChestShop.Listeners.PostShopCreation.MessageSender;
+import com.Acrobot.ChestShop.Listeners.PostShopCreation.ShopCreationLogger;
+import com.Acrobot.ChestShop.Listeners.PostShopCreation.SignSticker;
+import com.Acrobot.ChestShop.Listeners.PostTransaction.*;
+import com.Acrobot.ChestShop.Listeners.PreShopCreation.*;
+import com.Acrobot.ChestShop.Listeners.PreTransaction.*;
+import com.Acrobot.ChestShop.Listeners.PreTransaction.ErrorMessageSender;
+import com.Acrobot.ChestShop.Listeners.PreTransaction.PermissionChecker;
+import com.Acrobot.ChestShop.Listeners.ShopRemoval.ShopRefundListener;
+import com.Acrobot.ChestShop.Listeners.ShopRemoval.ShopRemovalLogger;
+import com.Acrobot.ChestShop.Logging.FileFormatter;
+import com.Acrobot.ChestShop.Metadata.ItemDatabase;
+import com.Acrobot.ChestShop.Signs.RestrictedSign;
+import com.Acrobot.ChestShop.UUIDs.NameManager;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +46,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.message.Message;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -23,62 +58,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.Acrobot.Breeze.Configuration.Configuration;
-import com.Acrobot.ChestShop.Commands.Give;
-import com.Acrobot.ChestShop.Commands.ItemInfo;
-import com.Acrobot.ChestShop.Commands.Toggle;
-import com.Acrobot.ChestShop.Commands.Version;
-import com.Acrobot.ChestShop.Configuration.Messages;
-import com.Acrobot.ChestShop.Configuration.Properties;
-import com.Acrobot.ChestShop.Database.Migrations;
-import com.Acrobot.ChestShop.Listeners.AuthMeChestShopListener;
-import com.Acrobot.ChestShop.Listeners.GarbageTextListener;
-import com.Acrobot.ChestShop.Listeners.ItemInfoListener;
-import com.Acrobot.ChestShop.Listeners.Block.BlockPlace;
-import com.Acrobot.ChestShop.Listeners.Block.SignCreate;
-import com.Acrobot.ChestShop.Listeners.Block.Break.ChestBreak;
-import com.Acrobot.ChestShop.Listeners.Block.Break.SignBreak;
-import com.Acrobot.ChestShop.Listeners.Economy.ServerAccountCorrector;
-import com.Acrobot.ChestShop.Listeners.Economy.TaxModule;
-import com.Acrobot.ChestShop.Listeners.Item.ItemMoveListener;
-import com.Acrobot.ChestShop.Listeners.Modules.DiscountModule;
-import com.Acrobot.ChestShop.Listeners.Modules.PriceRestrictionModule;
-import com.Acrobot.ChestShop.Listeners.Player.PlayerConnect;
-import com.Acrobot.ChestShop.Listeners.Player.PlayerInteract;
-import com.Acrobot.ChestShop.Listeners.Player.PlayerInventory;
-import com.Acrobot.ChestShop.Listeners.Player.PlayerLeave;
-import com.Acrobot.ChestShop.Listeners.Player.PlayerTeleport;
-import com.Acrobot.ChestShop.Listeners.PostShopCreation.CreationFeeGetter;
-import com.Acrobot.ChestShop.Listeners.PostShopCreation.MessageSender;
-import com.Acrobot.ChestShop.Listeners.PostShopCreation.ShopCreationLogger;
-import com.Acrobot.ChestShop.Listeners.PostTransaction.EconomicModule;
-import com.Acrobot.ChestShop.Listeners.PostTransaction.EmptyShopDeleter;
-import com.Acrobot.ChestShop.Listeners.PostTransaction.ItemManager;
-import com.Acrobot.ChestShop.Listeners.PostTransaction.TransactionLogger;
-import com.Acrobot.ChestShop.Listeners.PostTransaction.TransactionMessageSender;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.ChestChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.ItemChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.MoneyChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.NameChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.PriceChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.PriceRatioChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.QuantityChecker;
-import com.Acrobot.ChestShop.Listeners.PreShopCreation.TerrainChecker;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.AmountAndPriceChecker;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.CreativeModeIgnorer;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.ErrorMessageSender;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.PartialTransactionModule;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.PermissionChecker;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.PriceValidator;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.ShopValidator;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.SpamClickProtector;
-import com.Acrobot.ChestShop.Listeners.PreTransaction.StockFittingChecker;
-import com.Acrobot.ChestShop.Listeners.ShopRemoval.ShopRefundListener;
-import com.Acrobot.ChestShop.Listeners.ShopRemoval.ShopRemovalLogger;
-import com.Acrobot.ChestShop.Logging.FileFormatter;
-import com.Acrobot.ChestShop.Metadata.ItemDatabase;
-import com.Acrobot.ChestShop.Signs.RestrictedSign;
-import com.Acrobot.ChestShop.UUIDs.NameManager;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 /**
  * Main file of the plugin
@@ -96,6 +81,8 @@ public class ChestShop extends JavaPlugin {
     private static Logger logger;
     private FileHandler handler;
 
+    private List<PluginCommand> commands = new ArrayList<>();
+
     public ChestShop() {
         dataFolder = getDataFolder();
         logger = getLogger();
@@ -104,20 +91,29 @@ public class ChestShop extends JavaPlugin {
         plugin = this;
     }
 
-    public void onEnable() {
-        Configuration.pairFileAndClass(loadFile("config.yml"), Properties.class);
-        Configuration.pairFileAndClass(loadFile("local.yml"), Messages.class);
+    @Override
+    public void onLoad() {
+        Dependencies.initializePlugins();
+    }
 
+    @Override
+    public void onEnable() {
         turnOffDatabaseLogging();
         if (!handleMigrations()) {
             return;
         }
 
+        registerCommand("iteminfo", new ItemInfo(), Permission.ITEMINFO);
+        registerCommand("csVersion", new Version(), Permission.ADMIN);
+        registerCommand("csGive", new Give(), Permission.ADMIN);
+        registerCommand("cstoggle", new Toggle(), Permission.NOTIFY_TOGGLE);
+
+        loadConfig();
+
         itemDatabase = new ItemDatabase();
 
-        NameManager.load();
-
         if (!Dependencies.loadPlugins()) {
+            getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -137,11 +133,22 @@ public class ChestShop extends JavaPlugin {
             logger.setUseParentHandlers(false);
         }
 
-        getCommand("iteminfo").setExecutor(new ItemInfo());
-        getCommand("csVersion").setExecutor(new Version());
-        getCommand("csGive").setExecutor(new Give());
-        getCommand("cstoggle").setExecutor(new Toggle());
+    }
 
+    private void registerCommand(String name, CommandExecutor executor, Permission permission) {
+        PluginCommand command = getCommand(name);
+        command.setExecutor(executor);
+        command.setPermission(permission.toString());
+        commands.add(command);
+    }
+
+    public void loadConfig() {
+        Configuration.pairFileAndClass(loadFile("config.yml"), Properties.class);
+        Configuration.pairFileAndClass(loadFile("local.yml"), Messages.class);
+
+        NameManager.load();
+
+        commands.forEach(c -> c.setPermissionMessage(Messages.prefix(Messages.ACCESS_DENIED)));
     }
 
     private void turnOffDatabaseLogging() {
@@ -285,6 +292,7 @@ public class ChestShop extends JavaPlugin {
         registerEvent(new PlayerLeave());
         registerEvent(new PlayerTeleport());
 
+        registerEvent(new SignParseListener());
         registerEvent(new ItemInfoListener());
         registerEvent(new GarbageTextListener());
 
@@ -324,7 +332,7 @@ public class ChestShop extends JavaPlugin {
     private void registerPostShopCreationEvents() {
         registerEvent(new CreationFeeGetter());
         registerEvent(new MessageSender());
-        //registerEvent(new SignSticker());
+        registerEvent(new SignSticker());
         registerEvent(new ShopCreationLogger());
     }
 

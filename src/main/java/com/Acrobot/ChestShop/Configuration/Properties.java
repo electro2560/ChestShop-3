@@ -1,15 +1,74 @@
 package com.Acrobot.ChestShop.Configuration;
 
 import com.Acrobot.Breeze.Configuration.Annotations.ConfigurationComment;
+import com.Acrobot.Breeze.Configuration.Annotations.Parser;
 import com.Acrobot.Breeze.Configuration.Annotations.PrecededBySpace;
+import com.Acrobot.Breeze.Configuration.Configuration;
+import com.Acrobot.Breeze.Configuration.ValueParser;
+import com.Acrobot.ChestShop.ChestShop;
+import org.bukkit.Material;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * @author Acrobot
  */
 public class Properties {
+    static {
+        Configuration.registerParser("StringSet", new ValueParser(){
+            public Object parseToJava(Object object) {
+                if (object instanceof Collection) {
+                    return new LinkedHashSet<>((Collection<String>) object);
+                }
+                return object;
+            }
+        });
+        Configuration.registerParser("MaterialSet", new ValueParser(){
+            public Object parseToJava(Object object) {
+                if (object instanceof Collection) {
+                    EnumSet<Material> set = EnumSet.noneOf(Material.class);
+                    for (Object o : (Collection) object) {
+                        if (o instanceof Material) {
+                            set.add((Material) o);
+                        } else if (o instanceof String) {
+                            try {
+                                set.add(Material.getMaterial(((String) o).toUpperCase()));
+                            } catch (IllegalArgumentException e) {
+                                ChestShop.getBukkitLogger().log(Level.WARNING, o + " is not a valid Material name in the config!");
+                            }
+                        }
+                    }
+                    return set;
+                }
+                return object;
+            }
+        });
+        Configuration.registerParser("BigDecimal", new ValueParser(){
+            @Override
+            public String parseToYAML(Object object) {
+                if (object instanceof BigDecimal) {
+                    return object.toString();
+                }
+                return super.parseToYAML(object);
+            }
+
+            public Object parseToJava(Object object) {
+                if (object instanceof Double) {
+                    return BigDecimal.valueOf((Double) object);
+                }
+                return object;
+            }
+        });
+    }
+
     @ConfigurationComment("Do you want to turn off the automatic updates of ChestShop?")
     public static boolean TURN_OFF_UPDATES = false;
 
@@ -17,12 +76,23 @@ public class Properties {
     @ConfigurationComment("How large should the internal caches be?")
     public static int CACHE_SIZE = 1000;
 
+    /*@PrecededBySpace
+    @ConfigurationComment("What containers are allowed to hold a shop? (Only blocks with inventories work!)")
+    @Parser("MaterialSet")
+    public static Set<Material> SHOP_CONTAINERS = EnumSet.of(
+            Material.CHEST,
+            Material.TRAPPED_CHEST
+    );*/
+
     @PrecededBySpace
     @ConfigurationComment("(In 1/1000th of a second) How often can a player use the shop sign?")
     public static int SHOP_INTERACTION_INTERVAL = 250;
 
     @ConfigurationComment("Do you want to allow using shops to people in creative mode?")
     public static boolean IGNORE_CREATIVE_MODE = true;
+
+    @ConfigurationComment("Do you want to allow using shops to people who have access to it due to their permissions? (owners are always ignored)")
+    public static boolean IGNORE_ACCESS_PERMS = true;
 
     @ConfigurationComment("If true, people will buy with left-click and sell with right-click.")
     public static boolean REVERSE_BUTTONS = false;
@@ -47,7 +117,8 @@ public class Properties {
     public static boolean REMOVE_EMPTY_CHESTS = false;
 
     @ConfigurationComment("A list of worlds in which to remove empty shops with the previous config. Case sensitive. An empty list means all worlds.")
-    public static List<String> REMOVE_EMPTY_WORLDS = Arrays.asList("world1", "world2");
+    @Parser("StringSet")
+    public static Set<String> REMOVE_EMPTY_WORLDS = new LinkedHashSet<>(Arrays.asList("world1", "world2"));
 
     @PrecededBySpace
     @ConfigurationComment("First line of your Admin Shop's sign should look like this:")
@@ -63,10 +134,13 @@ public class Properties {
     public static int SERVER_TAX_AMOUNT = 0;
 
     @ConfigurationComment("Amount of money player must pay to create a shop")
-    public static double SHOP_CREATION_PRICE = 0;
+    public static BigDecimal SHOP_CREATION_PRICE = BigDecimal.valueOf(0);
 
     @ConfigurationComment("How much money do you get back when destroying a sign?")
-    public static double SHOP_REFUND_PRICE = 0;
+    public static BigDecimal SHOP_REFUND_PRICE = BigDecimal.valueOf(0);
+
+    @ConfigurationComment("How many decimal places are allowed at a maximum for prices?")
+    public static int PRICE_PRECISION = 2;
 
     @PrecededBySpace
     @ConfigurationComment("Should we block shops that sell things for more than they buy? (This prevents newbies from creating shops that would be exploited)")
@@ -107,6 +181,9 @@ public class Properties {
     @ConfigurationComment("Do you want ChestShop's messages to show up in console?")
     public static boolean LOG_TO_CONSOLE = true;
 
+    @ConfigurationComment("Should all shop removals be logged to the console?")
+    public static boolean LOG_ALL_SHOP_REMOVALS = true;
+
     @PrecededBySpace
     @ConfigurationComment("Do you want to stack all items up to 64 item stacks?")
     public static boolean STACK_TO_64 = false;
@@ -123,7 +200,7 @@ public class Properties {
     @ConfigurationComment("Do you want to turn off the default sign protection? Warning! Other players will be able to destroy other people's shops!")
     public static boolean TURN_OFF_SIGN_PROTECTION = false;
 
-    @ConfigurationComment("Do you want to disable the hopper protection, which prevents the hoppers from taking items out of chests?")
+    @ConfigurationComment("Do you want to disable the hopper protection, which prevents Hopper-Minecarts from taking items out of shops?")
     public static boolean TURN_OFF_HOPPER_PROTECTION = false;
 
     @ConfigurationComment("Do you want to protect shop chests with LWC?")

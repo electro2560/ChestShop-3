@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
  * @author Acrobot
  */
 public enum Permission {
-    SHOP_CREATION_BUY("ChestShop.shop.create.buy"),
+	SHOP_CREATION_BUY("ChestShop.shop.create.buy"),
     SHOP_CREATION_BUY_ID("ChestShop.shop.create.buy."),
 
     SHOP_CREATION_SELL("ChestShop.shop.create.sell"),
@@ -24,14 +24,21 @@ public enum Permission {
     SELL("ChestShop.shop.sell"),
 
     ADMIN("ChestShop.admin"),
+    ADMIN_SHOP("ChestShop.adminshop"),
     MOD("ChestShop.mod"),
-    OTHER_NAME("ChestShop.name."),
+    OTHER_NAME("ChestShop.name"),
+    OTHER_NAME_CREATE("ChestShop.othername.create"),
+    OTHER_NAME_DESTROY("ChestShop.othername.destroy"),
+    OTHER_NAME_ACCESS("ChestShop.othername.access"),
     GROUP("ChestShop.group."),
 
     NOFEE("ChestShop.nofee"),
     DISCOUNT("ChestShop.discount."),
+    NO_BUY_TAX("ChestShop.notax.buy"),
+    NO_SELL_TAX("ChestShop.notax.sell"),
 
-    NOTIFY_TOGGLE("ChestShop.toggle");
+    NOTIFY_TOGGLE("ChestShop.toggle"),
+    ITEMINFO("ChestShop.iteminfo");
 
     private final String permission;
 
